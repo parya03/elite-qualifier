@@ -11,7 +11,7 @@ This is the Elite Qualifier for C2C.
 - [Usage](#usage)
 
 ## Background
-Elite Qualifier. I am better than Pranit 
+Elite Qualifier. I am better than Pranit -Izzy
 
 ## Install
 N/A for now............
