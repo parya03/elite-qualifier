@@ -1,4 +1,7 @@
 import random
+import unittest
+from requests import get
+import json
 
 ###################################
 #Pranit Arya                      #
@@ -15,6 +18,16 @@ import random
 #Global variables
 name = ""
 useName = 0
+
+#Initialize APIs and variables
+publicIP = get("https://api.ipify.org").text
+#print(publicIP)
+geolocation = get("http://ip-api.com/json/").json() #Get location of the system where this script is being ran, for future reference
+#geolocationDict = json.loads(geolocationJSON) #Get geolocation JSON and parse it into a Python dictionary, NOT NECESSARY
+#print(geolocation["city"] + ", " + geolocation["regionName"] + ", " + geolocation["country"])
+with open("trivia.json") as trivia_file: #Open trivia JSON file
+  trivia = json.load(trivia_file)
+  #print(trivia)
 
 def introduction():
   global name
@@ -41,6 +54,22 @@ def generate_response(responseType): #Pass types of responses to return
     stringToReturn = random.choice(genericResponses)
   if(responseType == 1):
     stringToReturn = random.choice(yesNoResponses)
+  if(responseType == 2):
+    stringToReturn = "I am currently running on a system in " + geolocation["city"] + ", " + geolocation["regionName"] + ", " + geolocation["country"]
+  if(responseType == 3):
+    z = list(trivia["Capitals"].keys())
+    zindex = random.randrange(0, len(z))
+    response = input("What is the capital of " + z[zindex] + "? ")
+    if(response == trivia["Capitals"][z[zindex]]):
+      stringToReturn = "You are correct"
+    else:
+      stringToReturn = "Try again"
+    #print(trivia["Capitals"])
+  if(responseType == 4):
+    z = list(trivia["Jokes"].keys())
+    zindex = random.randrange(0, len(z))
+    response = input(z[zindex])
+    stringToReturn = trivia["Jokes"][z[zindex]]
   
   global useName
   global name
@@ -62,11 +91,18 @@ def handle_input(input):
   if input.find("Can") != -1 or input.find("can") != -1 or input.find("Is") != -1 or input.find("is") != -1:
     return generate_response(1)
   if input.find("help") != -1:
-    return "Type quit to quit, introduce to tell the Chatbot your name, and skip to have the Chatbot ask you something"
+    return "Type quit to quit, introduce to tell the Chatbot your name, trivia to find country capitals, and skip to have the Chatbot ask you something"
   if input.find("skip") != -1:
     return "Tell me something about yourself!"
   if input.find("introduce") != -1:
     return introduction()
+  if input.find("where are you") != -1:
+    return generate_response(2)
+  if input.find("trivia") != -1:
+    return generate_response(3)
+  if input.find("jokes") != -1:
+    return generate_response(4)
+
   else:
     return generate_response(0)
 
